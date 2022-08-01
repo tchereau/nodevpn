@@ -3,9 +3,9 @@ import net from 'net';
 //import dotenv
 import {config} from 'dotenv';
 config();
-
+const tap = new Tap();
 try{
-    const tap = new Tap();
+
     tap.mtu = 1400;
     tap.ipv4 = "10.11.12.2/24";
 /*     tap.on('data', (buf) => {

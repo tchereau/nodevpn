@@ -1,8 +1,8 @@
 import { Tun, Tap} from 'tuntap2';
 import net from 'net';
-
+const tap = new Tap();
 try{
-    const tap = new Tap();
+
     tap.mtu = 1400;
     tap.ipv4 = "10.11.12.1/24";
 /*     tap.on('data', (buf) => {

@@ -19,16 +19,17 @@ try{
     console.log(`error: ${e}`);
     process.exit(0);
 }
-let client = net.connect({host: process.env.serverAdress, port: 8124}, function() {
+let client = net.connect({host: process.env.serverAdress, port: 8124}, function(c) {
     console.log('server connected');
 
     if(tap) {
-        var muxer = Tap.muxer(1500);
-        var demuxer = Tap.demuxer(1500);
-        tap
-            .pipe(muxer)
-            .pipe(c)
-            .pipe(demuxer)
-            .pipe(tap);
+        c.on('data', (buf) => {
+            console.log(`received: ${buf}`);
+            tap.write(buf);
+        });
+        tap.on('data', (buf) => {
+            console.log(`sent: ${buf}`);
+            client.write(buf);
+        });
     }
 });

@@ -19,11 +19,11 @@ try{
     console.log(`error: ${e}`);
     process.exit(0);
 }
-let client = net.connect({host: process.env.serverAdress, port: 8124}, function(c) {
+let client = net.connect({host: process.env.serverAdress, port: 16502}, function(c) {
     console.log('server connected');
 
     if(tap) {
-        c.on('data', (buf) => {
+        client.on('data', (buf) => {
             console.log(`received: ${buf}`);
             tap.write(buf);
         });

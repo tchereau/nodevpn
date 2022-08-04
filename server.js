@@ -20,16 +20,15 @@ var srv = net.createServer({}, function(c) {
     console.log('server connected');
 
     if(tap) {
-        if(tap) {
-            c.on('data', (buf) => {
-                console.log(`received: ${buf}`);
-                tap.write(buf);
-            });
-            tap.on('data', (buf) => {
-                console.log(`sent: ${buf}`);
-                client.write(buf);
-            });
-        }
+        c.on('data', (buf) => {
+            console.log(`received: ${buf}`);
+            tap.write(buf);
+        });
+        tap.on('data', (buf) => {
+            console.log(`sent: ${buf}`);
+            c.write(buf);
+        });
     }
+
 });
 srv.listen(8124, function() {});

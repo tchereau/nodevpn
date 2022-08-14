@@ -1,12 +1,11 @@
 import { Tun, Tap} from 'tuntap2';
-import net from 'net';
-
+import { WebSocketServer } from 'ws';
 import {config} from 'dotenv';
 import fs from 'fs';
 config();
 const tap = new Tap();
 
-let passphrase= process.env.passphrase;
+//let passphrase= process.env.passphrase;
 
 /* let pubkeyobj = readArmored(fs.readFileSync('pub.asc', 'utf8'));
 let privkeyobj = readArmored(fs.readFileSync('priv.asc', 'utf8')); */
@@ -14,7 +13,7 @@ let privkeyobj = readArmored(fs.readFileSync('priv.asc', 'utf8')); */
 try{
 
     tap.mtu = 1400;
-    tap.ipv4 = "10.11.12.1/24";
+    //tap.ipv4 = "10.11.12.1/24";
 /*     tap.on('data', (buf) => {
         console.log(`received: ${buf}`);
     }); */
@@ -26,19 +25,24 @@ try{
     console.log(`error: ${e}`);
     process.exit(0);
 }
-var srv = net.createServer({}, function(c) {
-    console.log('server connected');
-
+var webs = new WebSocketServer({port: 8124});
+webs.on('connection', function(c) {
+    console.log('client connected');
     if(tap) {
-        c.on('data', (buf) => {
-            console.log(`received: ${buf}`);
-            tap.write(buf);
-        });
         tap.on('data', (buf) => {
-            console.log(`sent: ${buf}`);
-            c.write(buf);
-        });
+            //console.log(`sent: ${buf}`);
+            c.send(buf);
+        }
+        );
+        c.on('message', (buf) => {
+            //console.log(`received: ${buf}`);
+            tap.write(buf);
+        }
+        );
     }
-
 });
-srv.listen(process.env.serverPort, function() {});
+webs.on('error', function(e) {
+    console.log(`error: ${e}`);
+    process.exit(0);
+}
+);

@@ -1,5 +1,6 @@
 import { Tun, Tap} from 'tuntap2';
 import net from 'net';
+import crypto from 'crypto';
 //import dotenv
 import {config} from 'dotenv';
 config();
@@ -19,7 +20,7 @@ try{
     console.log(`error: ${e}`);
     process.exit(0);
 }
-let client = net.connect({host: process.env.serverAdress, port: 16502}, function(c) {
+let client = net.connect({host: process.env.serverAdress, port: process.env.serverPort}, function(c) {
     console.log('server connected');
 
     if(tap) {
